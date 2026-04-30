@@ -14,7 +14,6 @@ draft: false
 
 ---
 
-
 本教程手把手带你从零完成 **Fuwari 主题 + Astro 框架 + GitHub Pages** 个人博客全套搭建，从环境安装、模板初始化、本地调试、基础个性化配置，到 GitHub Actions 自动部署全程覆盖。步骤清晰、命令可直接复制复用，不仅适合新手一键复刻搭建，也方便自己后续遗忘流程时快速回看复盘，轻松拥有免费、稳定、高颜值的个人技术博客。
 
 ------
@@ -107,76 +106,62 @@ http://localhost:4321
 
 ------
 
-# 三、GitHub 仓库创建（非常关键）
+# 三、修改配置（决定你会不会白屏）
 
-------
+打开文件：
 
-## 1.仓库命名规范
-
-###  	推荐方式（子项目）
-
-```text
-my-blog
+```
+astro.config.mjs
 ```
 
-### 	进阶方式（个人主页）
+找到这一段，改成（按你自己的信息填）
 
-```text
-username.github.io
 ```
-
-------
-
-## 2.选择区别
-
-| 类型               | 作用       |
-| ------------------ | ---------- |
-| username.github.io | 直接主站   |
-| my-blog            | 子路径站点 |
-
-------
-
-# 四、项目初始化 & 推送
-
-------
-
-## 1. 初始化 git
-
-```bash
-git init
-git add .
-git commit -m "init blog"
+export default defineConfig({
+  site: "https://你的用户名.github.io",
+  base: "/你的仓库名/",
+});
 ```
 
 ------
 
-## 2. 绑定远程仓库
+## 举例
 
-```bash
-git branch -M main
-git remote add origin https://github.com/你的用户名/仓库名.git
-git push -u origin main
+你用户名是：
+
+```
+goglefeng
+```
+
+仓库名我们用：
+
+```
+fuwari-blog
+```
+
+那就写：
+
+```
+site: "https://goglefeng.github.io",
+base: "/fuwari-blog/",
 ```
 
 ------
 
-# 五、GitHub Pages 配置
+ **为什么必须改？**
 
-## 1.进入：
+GitHub Pages 的访问路径是：
 
-```text
-GitHub → Settings → Pages
+```
+https://用户名.github.io/仓库名/
 ```
 
-## 2.设置：
+不改就会：
 
-```text
-Source: GitHub Actions
-```
+❌ 页面空白
+ ❌ 样式丢失
 
-------
-
-# 六、GitHub Actions 自动部署（核心）
+# 四、GitHub Actions 自动部署（核心）
 
 ## 1.创建文件：
 
@@ -223,9 +208,78 @@ jobs:
           publish_dir: ./dist
 ```
 
+---
+
+# 五、GitHub 仓库创建（非常关键）
+
 ------
 
-# 七、上线流程（验证是否成功）
+## 1.仓库命名规范
+
+###  	推荐方式（子项目）
+
+```text
+my-blog
+```
+
+### 	进阶方式（个人主页）
+
+```text
+username.github.io
+```
+
+------
+
+## 2.选择区别
+
+| 类型               | 作用       |
+| ------------------ | ---------- |
+| username.github.io | 直接主站   |
+| my-blog            | 子路径站点 |
+
+------
+
+# 六、项目初始化 & 推送
+
+------
+
+## 1. 初始化 git
+
+```bash
+git init
+git add .
+git commit -m "init blog"
+```
+
+------
+
+## 2. 绑定远程仓库
+
+```bash
+git branch -M main
+git remote add origin https://github.com/你的用户名/仓库名.git
+git push -u origin main
+```
+
+------
+
+# 七、GitHub Pages 配置
+
+## 1.进入：
+
+```text
+GitHub → Settings → Pages
+```
+
+## 2.设置：
+
+```text
+Source: GitHub Actions
+```
+
+------
+
+# 八、上线流程（验证是否成功）
 
 ------
 
@@ -263,7 +317,7 @@ https://用户名.github.io/my-blog/
 
 ------
 
-# 八、写第一篇博客
+# 九、写第一篇博客
 
 ------
 
@@ -285,12 +339,12 @@ hello.md
 
 ```md
 ---
-title: Expressive Code Example
-published: 2024-04-10
-description: How code blocks look in Markdown using Expressive Code.
-tags: [Markdown, Blogging, Demo]
-category: Examples
-draft: false
+title: Expressive Code Example	\\标题
+published: 2024-04-10	\\时间
+description: How code blocks look in Markdown using Expressive Code.	\\文章简介
+tags: [Markdown, Blogging, Demo]	\\标签，给文章加关键字
+category: Examples	\\分类
+draft: false	\\正常显示，true不显示
 ---
 
 这是我的博客第一篇文章 🚀
@@ -298,7 +352,7 @@ draft: false
 
 ------
 
-# 九、日常使用流程（以后只需要记这个）
+# 十、日常使用流程（以后只需要记这个）
 
 ------
 
@@ -321,9 +375,9 @@ pnpm dev
 ## 3. 发布上线
 
 ```bash
-git add .
-git commit -m "new post"
-git push
+git add .	//把你本地所有修改的文件，标记为 “待保存”
+git commit -m "new post"	//生成一个本地版本，做一个保存点
+git push	//把本地保存的版本，上传到 GitHub
 ```
 
 ------
@@ -331,6 +385,82 @@ git push
 ## 4.自动部署
 
 GitHub Actions 自动完成（不用管）
+
+
+
+
+
+---
+
+# 十一、错误
+
+---
+
+## 1.上传错误排查
+
+```
+进入github仓库--进去Actions--左侧Deploy Astro to GitHub Pages 
+
+此错误为pnpm 版本冲突
+```
+
+![image-20260430224851713](https://cdn.jsdelivr.net/gh/goglefeng/blog-images@main/fuwari/20260430224851806.png)
+
+修改步骤六中创建的文件
+
+```
+.github/workflows/deploy.yml
+```
+
+ 找到这段
+
+```
+- uses: pnpm/action-setup@v4
+  with:
+    version: 8
+```
+
+ 改成这样（关键）
+
+```
+- uses: pnpm/action-setup@v4
+```
+
+把 `version: 8` 整行删掉
+
+---
+
+## 2.版本回退
+
+查询自己的github名字
+
+```
+git config user.name	//这里查自己github设置的名字
+```
+
+显示goglefeng提交的版本
+
+```
+git log --oneline --author="goglefeng"  //这里换成查到的名字
+```
+
+回退到621fcd2版本
+
+```
+git reset --hard 621fcd2	//替换为查询到的
+```
+
+本地操作后再同步到 GitHub 即可：
+
+1. 先在本地回退到之前的版本（用上面的 `git reset` 命令）
+
+2. 强制推送到 GitHub：
+
+   ```
+   git push -f
+   ```
+
+⚠️ 注意：`-f` 强制推送会覆盖 GitHub 上的历史记录，只在你自己的仓库用，团队项目别随便用。
 
 ------
 

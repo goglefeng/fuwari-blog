@@ -1,0 +1,43 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { Icon } from "astro-icon/components";
+import { getPostUrlBySlug } from "@utils/url-utils";
+import { formatDateToYYYYMMDD } from "../utils/date-utils";
+
+interface Props {
+  relatedPosts: Array<{
+    slug: string;
+    data: CollectionEntry<"posts">["data"];
+  }>;
+  class?: string;
+}
+
+const { relatedPosts, class: className } = Astro.props;
+---
+
+{
+  relatedPosts.length > 0 && (
+    <div class:list={["mt-4", className]}>
+      <div class="flex items-center gap-2 mb-4">
+        <div class="w-1 h-5 rounded-md bg-[var(--primary)]"></div>
+        <h2 class="font-bold text-xl text-90 transition">相关文章</h2>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {relatedPosts.map((post) => (
+          <a
+            href={getPostUrlBySlug(post.slug)}
+            class="card-base card-shadow p-4 hover:shadow-lg hover:scale-[1.02] active:scale-95 transition-all duration-200 group block no-underline"
+          >
+            <div class="font-bold text-sm text-90 line-clamp-2 mb-2 group-hover:text-[var(--primary)] transition">
+              {post.data.title}
+            </div>
+            <div class="flex items-center gap-1 text-xs text-30 mt-auto">
+              <Icon name="material-symbols:calendar-today-outline-rounded" class="text-sm" />
+              {formatDateToYYYYMMDD(post.data.published)}
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  )
+}

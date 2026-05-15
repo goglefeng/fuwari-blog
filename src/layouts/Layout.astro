@@ -151,6 +151,7 @@ const bannerOffset =
 	<body class=" min-h-screen transition " class:list={[{"lg:is-home": isHomePage, "enable-banner": enableBanner}]}
 		  data-overlayscrollbars-initialize
 	>
+		<div id="reading-progress" class="fixed top-0 left-0 z-[100] h-[3px] bg-[var(--primary)] transition-all duration-150 opacity-0" style="width: 0%"></div>
 		<ConfigCarrier></ConfigCarrier>
 		<slot />
 
@@ -457,6 +458,7 @@ if (window?.swup?.hooks) {
 let backToTopBtn = document.getElementById('back-to-top-btn');
 let toc = document.getElementById('toc-wrapper');
 let navbar = document.getElementById('navbar-wrapper')
+let progressBar = document.getElementById('reading-progress');
 function scrollFunction() {
 	let bannerHeight = window.innerHeight * (BANNER_HEIGHT / 100)
 
@@ -492,8 +494,57 @@ function scrollFunction() {
 			navbar.classList.remove('navbar-hidden')
 		}
 	}
+
+	// Reading progress bar
+	if (progressBar) {
+		const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+		const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+		if (scrollHeight <= 0) {
+			progressBar.style.width = '0%';
+			progressBar.classList.remove('show');
+			return;
+		}
+		const progress = Math.min((scrollTop / scrollHeight) * 100, 100);
+		progressBar.style.width = progress + '%';
+		if (scrollTop > 200) {
+			progressBar.classList.add('show');
+		} else {
+			progressBar.classList.remove('show');
+		}
+	}
 }
 window.onscroll = scrollFunction
+
+// Scroll reveal animations
+const revealObserver = new IntersectionObserver((entries) => {
+	entries.forEach(entry => {
+		if (entry.isIntersecting) {
+			entry.target.classList.add('revealed');
+			revealObserver.unobserve(entry.target);
+		}
+	});
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+function observeRevealElements() {
+	document.querySelectorAll('.reveal-on-scroll:not(.revealed)').forEach(el => {
+		revealObserver.observe(el);
+	});
+}
+
+observeRevealElements();
+
+// Re-observe after Swup page transitions
+if (window?.swup?.hooks) {
+	window.swup.hooks.on('content:replace', () => {
+		setTimeout(observeRevealElements, 100);
+	});
+} else {
+	document.addEventListener('swup:enable', () => {
+		window.swup.hooks.on('content:replace', () => {
+			setTimeout(observeRevealElements, 100);
+		});
+	});
+}
 
 window.onresize = () => {
 	// calculate the --banner-height-extend, which needs to be a multiple of 4 to avoid blurry text

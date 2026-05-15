@@ -1,9 +1,17 @@
 .custom-md {
     h1 {
-        @apply text-3xl;
+        @apply text-3xl tracking-tight;
     }
 
-    h1, h2, h3, h4, h5, h6 {
+    h2 {
+        @apply mt-10 mb-4 tracking-tight;
+    }
+
+    h3 {
+        @apply mt-8 mb-3 tracking-tight;
+    }
+
+    h1, h4, h5, h6 {
         .anchor {
             @apply transition -m-0.5 ml-[0.2ch] p-0.5 select-none opacity-0 no-underline !important;
 
@@ -98,18 +106,27 @@
     }
 
     blockquote {
-        @apply not-italic border-transparent relative;
+        @apply not-italic border-transparent relative border-l-[3px] border-l-[var(--primary)] rounded-r-lg py-1 my-6;
         font-weight: inherit;
+        padding-inline-start: 1rem;
+        background: rgb(128 128 128 / 0.06);
 
         &:before {
-            @apply content-[''] absolute -left-1 block transition bg-[var(--btn-regular-bg)] h-full w-1 rounded-full;
+            @apply content-none;
         }
 
         /* Remove the double quotes from default styles */
         p:before, p:after {
             @apply content-none;
         }
+    }
 
+    .dark .custom-md blockquote {
+        background: rgb(255 255 255 / 0.04);
+    }
+
+    p {
+        @apply leading-relaxed;
     }
 
     .katex-display-container {
@@ -117,5 +134,5 @@
         overflow-x: auto;
         margin: 1em 0;
     }
-    
+
 }

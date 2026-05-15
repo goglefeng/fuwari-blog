@@ -3,8 +3,7 @@ import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import { getCategoryUrl } from "@utils/url-utils.ts";
 
-// // Retrieve posts and sort them by publication date
-async function getRawSortedPosts() {
+export async function getRawSortedPosts(): Promise<CollectionEntry<"posts">[]> {
 	const allBlogPosts = await getCollection("posts", ({ data }) => {
 		return import.meta.env.PROD ? data.draft !== true : true;
 	});
@@ -111,4 +110,41 @@ export async function getCategoryList(): Promise<Category[]> {
 		});
 	}
 	return ret;
+}
+
+export async function getRelatedPosts(
+	currentPost: CollectionEntry<"posts">,
+	maxCount = 3,
+): Promise<PostForList[]> {
+	const allPosts = await getRawSortedPosts();
+	const otherPosts = allPosts.filter(
+		(post) => post.slug !== currentPost.slug,
+	);
+	const currentTags = currentPost.data.tags || [];
+
+	if (currentTags.length === 0) {
+		return otherPosts.slice(0, maxCount).map((post) => ({
+			slug: post.slug,
+			data: post.data,
+		}));
+	}
+
+	const scored = otherPosts.map((post) => {
+		const postTags = post.data.tags || [];
+		const sharedTags = postTags.filter((tag) => currentTags.includes(tag));
+		return { post, score: sharedTags.length };
+	});
+
+	scored.sort((a, b) => {
+		if (b.score !== a.score) return b.score - a.score;
+		return (
+			new Date(b.post.data.published).getTime() -
+			new Date(a.post.data.published).getTime()
+		);
+	});
+
+	return scored.slice(0, maxCount).map((item) => ({
+		slug: item.post.slug,
+		data: item.post.data,
+	}));
 }

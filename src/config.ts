@@ -1,5 +1,6 @@
 import type {
 	ExpressiveCodeConfig,
+	GiscusConfig,
 	LicenseConfig,
 	NavBarConfig,
 	ProfileConfig,
@@ -53,7 +54,7 @@ export const navBarConfig: NavBarConfig = {
 };
 //profileConfig   → 侧边个人信息卡（头像/名字/简介）
 export const profileConfig: ProfileConfig = {
-	avatar: "assets/images/1.png", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
+	avatar: "/1.png", // Relative to the /src directory. Relative to the /public directory if it starts with '/'    assets/images/1.png
 	name: "枫红",
 	bio: "记录学习与技术成长",
 	links: [
@@ -74,6 +75,20 @@ export const licenseConfig: LicenseConfig = {
 	enable: true,
 	name: "CC BY-NC-SA 4.0",
 	url: "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+};
+
+export const giscusConfig: GiscusConfig = {
+	enable: true,
+	repo: "goglefeng/fuwari",
+	repoId: "R_kgDOSQveTg",
+	category: "Announcements",
+	categoryId: "DIC_kwDOSQveTs4C9HUY",
+	mapping: "pathname",
+	reactionsEnabled: "1",
+	emitMetadata: "0",
+	inputPosition: "top",
+	lang: "zh_CN",
+	loading: "lazy",
 };
 
 export const expressiveCodeConfig: ExpressiveCodeConfig = {
